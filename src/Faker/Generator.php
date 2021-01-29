@@ -166,10 +166,7 @@ use Psr\Container\ContainerInterface;
  * @property string $randomLetter
  * @property string $randomAscii
  *
- * @method int randomNumber($nbDigits = null, $strict = false)
  * @method int|string|null randomKey(array $array = array())
- * @method int numberBetween($min = 0, $max = 2147483647)
- * @method float randomFloat($nbMaxDecimals = null, $min = 0, $max = null)
  * @method mixed randomElement(array $array = array('a', 'b', 'c'))
  * @method array randomElements(array $array = array('a', 'b', 'c'), $count = 1, $allowDuplicates = false)
  * @method array|string shuffle($arg = '')
@@ -315,54 +312,165 @@ class Generator
         return preg_replace_callback('/\{\{\s?(\w+)\s?\}\}/u', [$this, 'callFormatWithMatches'], $string);
     }
 
+    /**
+     * Get a random MIME type
+     *
+     * @example 'video/avi'
+     */
     public function mimeType()
     {
         return $this->ext(Extension\FileExtension::class)->mimeType();
     }
 
+    /**
+     * Get a random file extension (without a dot)
+     *
+     * @example avi
+     */
     public function fileExtension()
     {
         return $this->ext(Extension\FileExtension::class)->extension();
     }
 
+    /**
+     * Get a full path to a new real file on the system.
+     */
     public function filePath()
     {
         return $this->ext(Extension\FileExtension::class)->filePath();
     }
 
+    /**
+     * Get an actual blood type
+     *
+     * @example 'AB'
+     */
     public function bloodType(): string
     {
         return $this->ext(Extension\BloodExtension::class)->bloodType();
     }
 
+    /**
+     * Get a random resis value
+     *
+     * @example '+'
+     */
     public function bloodRh(): string
     {
         return $this->ext(Extension\BloodExtension::class)->bloodRh();
     }
 
+    /**
+     * Get a full blood group
+     *
+     * @example 'AB+'
+     */
     public function bloodGroup(): string
     {
         return $this->ext(Extension\BloodExtension::class)->bloodGroup();
     }
 
+    /**
+     * Get a random EAN13 barcode.
+     *
+     * @example '4006381333931'
+     */
     public function ean13(): string
     {
         return $this->ext(Extension\BarcodeExtension::class)->ean13();
     }
 
+    /**
+     * Get a random EAN8 barcode.
+     *
+     * @example '73513537'
+     */
     public function ean8(): string
     {
         return $this->ext(Extension\BarcodeExtension::class)->ean8();
     }
 
+    /**
+     * Get a random ISBN-10 code
+     *
+     * @see http://en.wikipedia.org/wiki/International_Standard_Book_Number
+     *
+     * @example '4881416324'
+     */
     public function isbn10(): string
     {
         return $this->ext(Extension\BarcodeExtension::class)->isbn10();
     }
 
+    /**
+     * Get a random ISBN-13 code
+     *
+     * @see http://en.wikipedia.org/wiki/International_Standard_Book_Number
+     *
+     * @example '9790404436093'
+     */
     public function isbn13(): string
     {
         return $this->ext(Extension\BarcodeExtension::class)->isbn13();
+    }
+
+    /**
+     * Returns a random number between $int1 and $int2 (any order)
+     *
+     * @example 79907610
+     */
+    public function numberBetween($int1 = 0, $int2 = 2147483647): int
+    {
+        return $this->ext(Extension\NumberExtension::class)->numberBetween((int) $int1, (int) $int2);
+    }
+
+    /**
+     * Returns a random number between 0 and 9
+     */
+    public function randomDigit(): int
+    {
+        return $this->ext(Extension\NumberExtension::class)->randomDigit();
+    }
+
+    /**
+     * Generates a random digit, which cannot be $except
+     */
+    public function randomDigitNot($except): int
+    {
+        return $this->ext(Extension\NumberExtension::class)->randomDigitNot((int) $except);
+    }
+
+    /**
+     * Returns a random number between 1 and 9
+     */
+    public function randomDigitNotZero(): int
+    {
+        return $this->ext(Extension\NumberExtension::class)->randomDigitNotZero();
+    }
+
+    /**
+     * Return a random float number
+     *
+     * @example 48.8932
+     */
+    public function randomFloat($nbMaxDecimals = null, $min = 0, $max = null): float
+    {
+        return $this->ext(Extension\NumberExtension::class)->randomFloat((int) $nbMaxDecimals, (float) $min, (float) $max);
+    }
+
+    /**
+     * Returns a random integer with 0 to $nbDigits digits.
+     *
+     * The maximum value returned is mt_getrandmax()
+     *
+     * @param int|null $nbDigits Defaults to a random number between 1 and 9
+     * @param bool     $strict   Whether the returned number should have exactly $nbDigits
+     *
+     * @example 79907610
+     */
+    public function randomNumber($nbDigits = null, $strict = false): int
+    {
+        return $this->ext(Extension\NumberExtension::class)->randomNumber((int) $nbDigits, (bool) $strict);
     }
 
     protected function callFormatWithMatches($matches)
